@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.6.9)  9 JUN 2011 22:28
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.6.9)  10 JUN 2011 00:40
 entering extended mode
  %&-line parsing enabled.
 **esp.tex
@@ -88,24 +88,41 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 <example_controller_layout.pdf, id=16, 571.13374pt x 714.67pt>
 File: example_controller_layout.pdf Graphic file (type pdf)
 
-<use example_controller_layout.pdf> [4] [5 <./example_controller_layout.pdf>]
-(./esp.aux) ) 
+<use example_controller_layout.pdf>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4] [5 <./example_controller_layout.pdf>]
+<01layout.pdf, id=25, 1283.79625pt x 717.68124pt>
+File: 01layout.pdf Graphic file (type pdf)
+ <use 01layout.pdf>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<01layoutalt.pdf, id=26, 1570.86874pt x 714.67pt>
+File: 01layoutalt.pdf Graphic file (type pdf)
+ <use 01layoutalt.pdf>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[6] [7 <./01layout.pdf> <./01layoutalt.pdf>] (./esp.aux) ) 
 Here is how much of TeX's memory you used:
- 915 strings out of 495061
- 11428 string characters out of 1182622
- 64541 words of memory out of 3000000
- 4140 multiletter control sequences out of 15000+50000
- 7895 words of font info for 28 fonts, out of 3000000 for 9000
+ 929 strings out of 495061
+ 11642 string characters out of 1182622
+ 64557 words of memory out of 3000000
+ 4151 multiletter control sequences out of 15000+50000
+ 8063 words of font info for 29 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 25i,6n,19p,834b,238s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pf
-b></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sha
-re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-tex
-live/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/t
-ype1/public/amsfonts/cm/cmr17.pfb>
-Output written on esp.pdf (5 pages, 91158 bytes).
+ 25i,6n,19p,834b,244s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-tex
+live/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/
+type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/publi
+c/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/c
+m/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17.pfb>
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on esp.pdf (7 pages, 151759 bytes).
 PDF statistics:
- 41 PDF objects out of 1000 (max. 8388607)
+ 59 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

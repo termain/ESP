@@ -43,7 +43,7 @@ The each model will be accessible through at least three submodules, each with a
 \end{description}
 In all cases, reasons for and explanations of any of the optimizations should be explained in the code.
 
-Individual models will be able to import the numerical and modelling libraries, all of which will be threadsafe. All functions will be purely functional to the greatest extent practical.
+Individual models will be able to import the numerical and modelling libraries, all of which will be threadsafe. All functions will be purely functional to the greatest extent practical. To allow for generic types, single argument numerical functions like square root will attempt to call that relevant method (sqrt()) method.
 
 \subsection{The Controller}
 The controller program coordinates and controls the order and rates at which models are run as well as maintains, shares and collects interprocess and global state, all at the process level. The prime purpose of the controller program is to structure model programs together to create a simulation. It will also be able to communicate across networked computers. The controller program will communicate with the model programs via a set of function  calls that allow the programs to register with the controller, respond to controller commands to run for a cycle, shutdown, copy in new global state and copy out local state. These functions will be located in the controller module.
@@ -66,13 +66,13 @@ The controller will repeate the cycle either a fixed number of times as commande
 All of the modes other than the generic model can be implemented by calling one or two models that run at the end of the run ordering. For instance, time mode can be implemented simply by having a single model in group -1 that increments the time state and stores the previous state in case the time step changes.
 \end{description}
 
-\begin{figure}[htb]
+\begin{figure}[h]
 \begin{center}
 \leavevmode
 \includegraphics[width=0.25\textwidth]{example_controller_layout.pdf}
 \end{center}
 \caption{Example controller/model topology}
-\label{fig:example_controller_model_topology}
+\label{example_controller_model_topology}
 \end{figure}
 
 \subsection{The Utilities}
@@ -86,7 +86,48 @@ Version 0.1 will implement all of the components of the ESP design necessary to 
 	\item[Dynamics Model] A simple 3dof simulation of the rocket state and its component parts will intialize at a velocity  and position dictated by the earth's rotation and the rocket's starting lattitude, longitude and altitude. The rocket's position and velocity will then be integrated over time responding to applied forces from gravitational, aerodynamic and engine forces. The rocket's mass will be calculated from a starting mass and a fuel mass that is integrated over time according the the mass flowrate dictated by the engine model.
 	\item[Aerodynamics Model] An aerodynamics model will calculate drag on the rocket as a function of Mach number and atmospheric density.
 	\item[Atmospheric Model] An atmosphere model will calculate air density according to the rocket's position.
-	\item[]
+	\item[Gravity Model] A model of the earth's gravitational field and its effects on the rocket.
+	\item[Engine Model] A model that calculates thrust from the engines and the direction of that thrust applied to the rocket.
+	\item[Engine Controller Model] A model containing the navigation commands (as engine thrust angles) to the rocket. The model will  consist of a set of engine thrust angles at a discrete set of time intervals with cubic splines in between. (Unless theres a better way to do this)
+\end{description}
+To implement the these models, the following standard module numerical routines and typeswill be implemented:
+\begin{description}
+	\item[Vector Type] A generic vector type with addition, substraction, dot and cross products and scaling will be implemented. A norm method will also be implemented.
+	\item[ODE Solver] An ODE solver will be implemented with interfaces that both return a single time step increment as well as a list of values given a list of time steps. The solver will use the vector type for vectors and generic number types for numbers.
+	\item[Unconstrained optimizer] An uncontrained optimizer will be implemented that can optimize the thrust angle nodes.
+	\item[Horner's method] Horner's method of evaluating polynomials for quick calculation of the spline values.
+	\item[Linear and Quadratic Interpolation] For modelling the engine specific impulse as a function of altitude as well as modelling the atmosphere.
+	\item[Cubic splines] For modelling thrust direction.
+	\item[Look up tables] For the atmosphere model. 
+\end{description}
+To coordinate and control these models, the generic, optimization and time modes of the controller program will be implemented. The optimization and time modes will be implemented using models that run last and second to last in a controller cycle. The time mode will be used to advance the time in the dynamics model.
+
+\begin{figure}[h]
+\begin{center}
+\leavevmode
+\includegraphics[width=0.75\textwidth]{01layout.pdf}
+\end{center}
+\caption{Version 0.1 3dof sim topology}
+\label{01layout}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+\leavevmode
+\includegraphics[width=0.75\textwidth]{01layoutalt.pdf}
+\end{center}
+\caption{Alternate view of 3dof sim topology}
+\label{01layout_alt}
+\end{figure}
+
+The simulation will be laid out as in Figure~\ref{01layout}. Figure~\ref{01layout_alt} shows the layout of the simulation with the timer, objective function and optimizer models connected to the generic controller programs, explicitly showing how the controller programs will be implemented with respect to the rest of the sim. The numbers are the order numbers which determine the order in which the executables will run.
+
+\subsection{Version 0.1 API}
+\begin{verbatim}
+module standard
+    class Rocket
+\end{verbatim}
+
 
 
 \end{document}
