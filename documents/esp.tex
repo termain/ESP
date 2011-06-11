@@ -2,6 +2,7 @@
 \usepackage{graphicx} %for importing pictures
 \usepackage{float}
 \usepackage{alltt} %extended verbatim mode
+\usepackage{fullpage}
 \renewcommand{\ttdefault}{txtt} %bold in alltt
 
 \begin{document}
@@ -70,10 +71,10 @@ The controller will repeate the cycle either a fixed number of times as commande
 All of the modes other than the generic model can be implemented by calling one or two models that run at the end of the run ordering. For instance, time mode can be implemented simply by having a single model in group -1 that increments the time state and stores the previous state in case the time step changes.
 \end{description}
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \leavevmode
-\includegraphics[width=0.25\textwidth]{example_controller_layout.pdf}
+\includegraphics[width=0.75\textwidth]{example_controller_layout.pdf}
 \caption{Example controller/model topology}
 \label{example_controller_model_topology}
 \end{figure}
@@ -105,7 +106,7 @@ To implement the these models, the following standard module numerical routines 
 \end{description}
 To coordinate and control these models, the generic, optimization and time modes of the controller program will be implemented. The optimization and time modes will be implemented using models that run last and second to last in a controller cycle. The time mode will be used to advance the time in the dynamics model.
 
-\begin{figure}[H]
+\begin{figure}[h]
 \centering
 \leavevmode
 \includegraphics[width=0.75\textwidth]{01layout.pdf}
@@ -113,7 +114,7 @@ To coordinate and control these models, the generic, optimization and time modes
 \label{01layout}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h]
 \begin{center}
 \leavevmode
 \includegraphics[width=0.75\textwidth]{01layoutalt.pdf}
@@ -124,10 +125,46 @@ To coordinate and control these models, the generic, optimization and time modes
 
 The simulation will be laid out as in Figure~\ref{01layout}. Figure~\ref{01layout_alt} shows the layout of the simulation with the timer, objective function and optimizer models connected to the generic controller programs, explicitly showing how the controller programs will be implemented with respect to the rest of the sim. The numbers are the order numbers which determine the order in which the executables will run.
 
+\section{Run example}
+
+A simulation run consists of starting the root controller program, passing it input via standard in. Then, the children of the controller are started, with input passed in front standard in as well if they are controller programs. A controller program that is not the root passes must first have all of its children register before it registers with its parent. 
+
+Once all of the root node's children have registered, the children can run until they reach controller.get\_inputs(), which should be inside a loop defined using  "while True:". This is the main program loop for the model.  get\_inputs() acts a barrier, so execution pauses until the controller program orders it to proceed. Execution will proceed until it reaches a controller.barrier() or a controller.set\_outputs() call.
+
+controller.barrier() acts as a general purpose barrier and should be used only as a stand in for the get\_inputs() and set\_outputs() calls when no input or output is needed. set\_outputs() sends the model's outputs to the controller program and then pauses execution until the controller program tells it to proceed. Once the last loop is run, exit() can be called from within any of the barrier methods.
+
+Once the root controller sends the shutdown command to its models, it then waits until all the models acknowledge the command before shutting down. Non-root controllers pass the shutdown command to their children and also wait until acknowledgement before both acknowledging their parent's shutdown command and shutting down themselves.
+
+\section{Controller program input commands}
+
+The controller program takes a set of commands, generally passed as file stream, to configure for running the simulation and to be controlled during the run. It may also output status to standard out. There are reserved variable names that should not be used for state variable names: root, cycles, order, run, shutdown, step, status, load.
+
+For the prototype (v0.1) build, we will implement these as python statements.
+
+\begin{description}
+	\item[\emph{variable\_name} = \emph{value}] Creates or assigns a \emph{value} to {variable\_name}
+	\item[load( \emph{filename} )] Loads a file of controller commands.
+	\item[root=\emph{boolean}] Set to True if controller is the root node, False otherwise.
+	\item[cycles=\emph{integer}] Number of times the controller will run the loop.
+	\item[order[\emph{model\_name}] = \emph{integer} ] The order number of the model named \emph{model\_name}. Defaults to 0.
+	\item[run()] Begining running the simulation loop.
+	\item[step()] Run on step of the simulation loop.
+	\item[shutdown()] Send the shutdown command to children and quit once all acknowledgements have been received.
+	\item[state([\emph{name}])] Print the values of the state variable named \emph{name}. Print all of them if no name is given.
+	\item[status()] Print the controller program status.
+\end{description}
+
 \section{Version 0.1 API}
 \begin{alltt}
-\emph{class} standard.\textbf{Vector}
+\emph{class} standard.\textbf{Vector }
     Generic Vector class built on top of lists.
+
+    \textbf{Vector}( \emph{values [,length] } )
+       Vector constructor that takes a list of numbers and returns a Vector.
+       If length, a integer, is defined, will return a Vector of \emph{length} elements
+       where every element has value \emph{values}. Note that you can create
+       vectors of vectors. Vectors of lists and tuples can be created, but mathematical
+       operations on them should cause exceptions.
 
     \textbf{row}
         Boolean set to true if vector is a row vector 
@@ -153,15 +190,233 @@ The simulation will be laid out as in Figure~\ref{01layout}. Figure~\ref{01layou
     \textbf{__rmul__}( \emph{ self, other} )
         The right hand versions of __add__, __sub__ and __mul__.
 
+    \textbf{__getitem__}( \emph{ self, key} )
+        Implements assignment from self[key] where key is the 
+        index of the element of the vector.
+
+    \textbf{__setitem__}( \emph{ self, key} )
+        Implements assignment to self[key] where key is the index 
+        of the element of the vector.
+
     \textbf{norm}(\emph{self[,p]})
         The norm of the vector (2 norm by default). \emph{p} is
          the p-norm value. No support of infinity yet.
 
+standard.\textbf{norm}(\emph{ vector[,p]})
+    The norm of a Vector \emph{vector} (2 norm by default.)
+    \emph{p} is the p-norm value. No support of infinity yet.
 
+    Will support other types in future by calling type's norm()
+    method.
 
+standard.\textbf{dot}(\emph{ left,right})
+    Returns the dot product of left and right.
+
+standard.\textbf{cross}(\emph{ left,right})
+    Returns the cross product of left and right.
+
+standard.\textbf{ode_step}(\emph{function, initial_value, step_size[, **kwargs]})
+    A single step of an ODE solver. The default choice of solver should 
+    be a reasonable explicit, single-step, fixed step solver such as RK4. 
+    \emph{function} should be a  function x'=f( x,t ) such that x is a 
+    scalar or Vector and t is a real scalar and x' is
+    the derivative of x with respect to t.
+
+    \emph{initial_value} is the initial value of the function at the
+     start time, which defaults to t=0. \emph{step_size} is the 
+     initial time step size. 
+
+    The \emph{**kwargs} arguments will allow the user to select
+    different solvers, different solver options and to pass 
+    previous time step data to multistep methods.
+
+standard.\textbf{ode_solve}(\emph{function, initial_value, steps[, **kwargs]})
+    An ODE solver that repeated applies \emph{ode_step}() to \emph{function}.
+    The inputs are the same as \emph{ode_step}() except that instead of \emph{step_size},
+    \emph{steps} takes a list of times and solves for those times. If a variable time step 
+    method is used, \emph{steps} should be a 3-tuple 
+    (intial time, intial step size, final time)
+
+standard.\textbf{optimize}(\emph{function, initial_value[, **kwargs]})
+    A gradient based optimizer that begins at \emph{intial_value} and 
+    searches for a local optimum. \emph{function} should be a
+    function y=f( x ) such that x is a Vector and y is a scalar objective 
+    function.
+
+    Any necessary options are passed via \emph{kwargs} and
+    constraints are not supported yet.
+
+standard.\textbf{horners_method}(\emph{coefficients[, argument]})
+    Returns a function that takes a value x and returns 
+    the value of the polynomial with Horner's method coefficents
+    \emph{coefficients}. If \emph{argument} is given, then 
+    \textbf{horners_method}() returns the value of the polynomial
+    instead of a function.
+
+standard.\textbf{interpolate}(\emph{points [, value, **kwargs ]} )
+    Returns a function that gives the interpolation between points
+    \emph{points}. Only supports 1 dimensional interpolation currently.
+    If \emph{value} is given, returns the value of the interpolation rather
+    than a function.
+
+    \emph{**kwargs} allows setting options, currently \emph{type=}
+    either "linear", "quadratic" or "spline". Linear interpolation is the default, and
+    should only require 2 points while quadratic interpolation will require
+    3 points.
 	
+\emph{class} standard.\textbf{LookupTable }
+    Lookup table class. Currently, 1 dimensional only. Provides
+    nearest neighbor lookup, linear and quadratic interpolation
+    and cubic spline approximation. 
+
+  \textbf{LookupTable}(\emph{[table]} )
+      Default constructor that initializes lookup table. If 
+      a dictionary \emph{table} is provided whose keys are
+      a non repeating orderable list, the keys become the
+      independent variables and the values become the dependent
+      variables.
+
+  \textbf{load}(self,fileid)
+      Load a lookup table from file stream \emph{fileid}.
+
+  \textbf{lookup}(self,argument, method="linear")
+      Look up the approximate value of the function
+      described by lookup table for the chosen method
+      and the given argument. \emph{method} may have
+      values of "linear", "neighbor","quadratic","spline"
+
+  \textbf{functionfy}(self,method="linear")
+      Return a function y = f(x) that wraps the lookup table lookup()
+      by returning a value y for a given x.
+
+  \textbf{__getitem__}(self,key)
+      Return the dependent variable value associated with \emph{key}.
+      If there isn't one, return None.
+
+  \textbf{__setitem__}(self,key)
+      Set the dependent variable value associated with \emph{key}.
+
+\emph{class} standard.models.ase.\textbf{RocketEngine}
+  A rocket engine class that contains lookup tables for exhaust
+  velocity  as a function of ambient pressure and propellant 
+  flowrate as a function of throttle command.
+
+  \textbf{flowrate_table} 
+    A LookupTable for thrust as function of throttle command.
+
+  \textbf{exhaust_velocity_table}
+    A LookupTable for exhaust velocity as a function of ambient
+    pressure.
+
+  \textbf{load}(\emph{file_id})
+    Load the engine's lookup tables from file stream \emph{file_id}.
+
+  \textbf{flowrate}(\emph{throttle})
+    Function that returns flowrate given a real throttle input.
+
+  \textbf{exhaust_velocity}(\emph{ambient_pressure})
+    Function that returns an exhaust velocity given an ambient
+    pressure.
+
+  \textbf{thrust}(\emph{throttle, ambient_pressure})
+    Function that returns thrust given ambient pressure
+    and throttle.
+
+\emph{class} standard.models.ase.\textbf{Atmosphere}
+  A class that models the atmosphere.
+
+  \textbf{density}(\emph{altitude} )
+    A function that returns density as a function of altitude.
+
+  \textbf{pressure}(\emph{altitude} )
+    A function that returns pressure as a function of altitude.
+
+  \textbf{speed_of_sound}(\emph{altitude} )
+    A function that returns speed of sound as a function of altitude.
+
+\emph{class} standard.models.ase.\textbf{Gravity}
+  A class that models the Earth's gravitational field.
+
+  \textbf{little_g}(\emph{location, [sideral_time] } )
+    Returns a vector of the locale gravitational acceleration for
+    \emph{location}. \emph{location} is assumed to be ECF
+    frame if no sideral time is given and in ECI inertial if sideral time
+    is given.
+
+  \textbf{potential}(\emph{location, [sideral_time] } )
+    Returns the local gravitational potential for
+    \emph{location}. \emph{location} is assumed to be ECF
+    frame if no sideral time is given and in ECI inertial if sideral time
+    is given.
+
+\emph{class} standard.models.ase.\textbf{Aerodynamics}
+  Class modeling drag on the rocket. Uses a look table that
+  estimates coefficient of drag as a function of Mach number.
+  Utilizes an atmosphere model.
+
+  \textbf{load}(\emph{file_id})
+    Loads coefficient of drag table from file stream \emph{file_id}
+
+  \textbf{set_atmosphere}(\emph{atmosphere})
+    Sets aero model's atmosphere to the \emph{atmosphere}
+    object.
+
+  \textbf{mach_number}(\emph{ altitude, speed})
+    Returns Mach number given the altitude and
+    object's speed.
+
+  \textbf{drag_coefficient}(\emph{mach_number})
+    Returns drag coefficient given a Mach number.
+
+  \textbf{drag_force}(\emph{mach_number, altitude, ref_area})
+    Returns a drag force vector given a Mach number, altitude and
+    a reference area.
+
+\emph{class} standard.models.ase.\textbf{EngineController}
+  Class that implements open loop guidance via engine angles 
+  as rotations about the x (theta) and y (phi) axes of the 
+  ECI reference frame as functions of time.
+
+  \textbf{theta}(\emph{time})
+    Returns the engine thrust line angle about the ECI x axis as a 
+    function of time.
+
+  \textbf{phi}(\emph{time})
+    Returns the engine thrust line angle about the ECI y axis as a 
+    function of time.
+
+controller.\textbf{register}( \emph{name, location} )
+  Register this model as \emph{name} with controller program at 
+  location \emph{location}
+
+controller.\textbf{get_inputs}( state_names )
+  Returns a dictionary with the members of \emph{state_names}
+  list as keys and the values of those states as their values. The states
+  are those maintained by the controller program. The names of the states
+  are known to the model and the control program (and can be ints, str, etc).
+  Also acts as barrier. Execution proceeds after the controller program orders 
+  it to continue.
+
+controller.\textbf{set_outputs}( state_dictionary )
+  Sends the global state in \emph{state_dictionary} back to the controller
+  program the model is registered with. This also acts a barrier, waiting on
+  the controller program to order continued execution.
+
+controller.\textbf{barrier}()
+  A barrier that pauses model execution until the controller program tells it
+  to continue.
+
+controller.\textbf{rewind}(\emph{ state_dictionary })
+  Request that the controller program rerun the previous iteration using
+  the state from that iteration with only the states in \emph{state_dictionary}
+
+controller.\textbf{shutdown}()
+  Request the that controller program send a shutdown command to the models.
+
+controller.\textbf{running}()
+  Returns True if the controller program has not sent the shutdown command and
+  False if it has.
+
 \end{alltt}
-
-
 
 \end{document}
