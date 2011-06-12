@@ -1,8 +1,8 @@
 syntax: glob
 
-*/*.aux
-*/*.gz*
-*\~
-*/*\~
-*.aux
-*.gz*
+documents/*.aux
+documents/*.pdf
+documents/*.log
+documents/*.out
+documents/*.dia~
+documents/*.gz
