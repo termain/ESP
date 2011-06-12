@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.6.10)  10 JUN 2011 21:22
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.6.10)  10 JUN 2011 21:35
 entering extended mode
  %&-line parsing enabled.
 **esp.tex
@@ -124,22 +124,28 @@ File: 01layout.pdf Graphic file (type pdf)
 <01layoutalt.pdf, id=33, 1570.86874pt x 714.67pt>
 File: 01layoutalt.pdf Graphic file (type pdf)
  <use 01layoutalt.pdf>
+
+LaTeX Warning: Reference `01layout' on page 8 undefined on input line 127.
+
+
+LaTeX Warning: Reference `01layout_alt' on page 8 undefined on input line 127.
+
 [8 <./01layout.pdf> <./01layoutalt.pdf>]
-Overfull \hbox (21.15132pt too wide) in paragraph at lines 132--133
+Overfull \hbox (21.15132pt too wide) in paragraph at lines 133--134
 []\OT1/cmr/m/n/10 Once all of the root node's chil-dren have reg-is-tered, the 
 chil-dren can run un-til they reach con-troller.get[]inputs(),
  []
 
-LaTeX Font Info:    Try loading font information for OT1+txtt on input line 158
+LaTeX Font Info:    Try loading font information for OT1+txtt on input line 159
 .
 (/usr/share/texmf-texlive/tex/latex/txfonts/ot1txtt.fd
 File: ot1txtt.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    Font shape `OT1/txtt/m/it' in size <10> not available
-(Font)              Font shape `OT1/txtt/m/sl' tried instead on input line 159.
+(Font)              Font shape `OT1/txtt/m/sl' tried instead on input line 160.
 
 LaTeX Font Info:    Font shape `OT1/txtt/bx/n' in size <10> not available
-(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 159.
+(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 160.
  [9]
 Underfull \vbox (badness 2213) has occurred while \output is active []
 
@@ -156,25 +162,32 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [14]
-[15] (./esp.aux) ) 
+[15] (./esp.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
  1087 strings out of 493848
  13823 string characters out of 1152823
- 68440 words of memory out of 3000000
+ 68410 words of memory out of 3000000
  4389 multiletter control sequences out of 15000+50000
  10407 words of font info for 36 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
  25i,6n,19p,834b,262s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx
-10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
-r/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/t
-exmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive
-/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1
-/public/amsfonts/cm/cmr17.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
-onts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/txfonts/txbtt.p
-fb></usr/share/texmf-texlive/fonts/type1/public/txfonts/txtt.pfb></usr/share/te
-xmf-texlive/fonts/type1/public/txfonts/txtt.pfb>
-Output written on esp.pdf (15 pages, 198243 bytes).
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-te
+xlive/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/texmf-texlive/fon
+ts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/pub
+lic/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
+/cm/cmr17.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti10.p
+fb></usr/share/texmf-texlive/fonts/type1/public/txfonts/txbtt.pfb></usr/share/t
+exmf-texlive/fonts/type1/public/txfonts/txtt.pfb></usr/share/texmf-texlive/font
+s/type1/public/txfonts/txtt.pfb>
+Output written on esp.pdf (15 pages, 198508 bytes).
 PDF statistics:
  100 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
