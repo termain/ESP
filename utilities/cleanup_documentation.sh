@@ -2,13 +2,10 @@
 
 PDFS="01layoutalt 01layout example_controller_layout"
 
-cd ../documents
-
 for FILE in $PDFS; do
-    dia -t eps $FILE.dia
-    epstopdf $FILE.eps
+    rm $FILE.pdf
 done
 
-pdflatex esp.tex
-
-
+rm *.eps
+rm *.aux
+rm *.log

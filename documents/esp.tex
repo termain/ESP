@@ -160,7 +160,7 @@ For the prototype (v0.1) build, we will implement these as python statements.
 \emph{class} standard.\textbf{Vector }
     Generic Vector class built on top of lists.
 
-    \textbf{Vector}( \emph{values [,length] } )
+    \textbf{Vector}( \emph{ values [,length] } )
        Vector constructor that takes a list of numbers and returns a Vector.
        If length, a integer, is defined, will return a Vector of \emph{length} elements
        where every element has value \emph{values}. Note that you can create
@@ -171,10 +171,8 @@ For the prototype (v0.1) build, we will implement these as python statements.
         Boolean set to true if vector is a row vector 
         and false if vector is a column vector
 
-    \textbf{elements}
-         List of the vector's elements. All the elements
-         should be of a type with  __add__(), __sub__() 
-         and __mul__() defined.
+   \textbf{__len__}(\emph{self})
+        Returns the number of elements in the vector.
 
     \textbf{__add__}( \emph{ self, other} )
          Returns a vector that is the sum of self and other.
@@ -183,7 +181,7 @@ For the prototype (v0.1) build, we will implement these as python statements.
          Returns a vector that is the difference of self and other.
 
     \textbf{__mul__}( \emph{ self, other} )
-         Returns a vector that is the product of self and other.
+         Returns a vector that is the piecewise product of self and other.
          If other is a scalar, multiply it piecewise with self.
 
     \textbf{__radd__}( \emph{ self, other} )
@@ -195,7 +193,7 @@ For the prototype (v0.1) build, we will implement these as python statements.
         Implements assignment from self[key] where key is the 
         index of the element of the vector.
 
-    \textbf{__setitem__}( \emph{ self, key} )
+    \textbf{__setitem__}( \emph{ self, key, value} )
         Implements assignment to self[key] where key is the index 
         of the element of the vector.
 
