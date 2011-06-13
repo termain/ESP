@@ -19,7 +19,7 @@ setup(
     license = "GPL3",
     keywords = "modeling simulation education engineering",
     url = "http://github.com/termain/esp",
-    packages=['standard'],
+    packages=['esp'],
     long_description=read('README'),
     classifiers=[
         "Development Status :: 1 - Planning",
