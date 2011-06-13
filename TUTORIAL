@@ -1,0 +1,11 @@
+Currently, only the Vector class exists.
+
+To try it out, install as described in the README. Then just import the esp.standard module in python:
+
+For example, to print a 3 element zero vector:
+$python 
+>>> import esp.standard as esp
+>>> vec = esp.Vector( 0, 3 ) 
+>>> print vec
+
+For further documentation, try help( esp.standard ) from within python.

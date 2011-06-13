@@ -6,3 +6,11 @@ documents/*.log
 documents/*.out
 documents/*.dia~
 documents/*.gz
+
+dist/
+ESP.egg-info/
+build/
+
+dist/*
+ESP.egg-info/*
+build/*
