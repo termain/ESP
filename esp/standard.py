@@ -97,4 +97,12 @@ class Vector:
     def norm( self, p=2 ):
         """Returns the p-norm of the vector. Defaults to the Euler norm if no p is given. Not implemented yet."""
         return( NotImplemented )
-        
+
+    def __repr__( self ):
+        """Represents a vector class as a string"""
+        elem_string = "Vector( ["+str(self[0])
+        for index in range(1,self.length):
+            elem_string=elem_string+","+str( self[index] )
+
+        elem_string=elem_string + "] )"
+        return( elem_string )
