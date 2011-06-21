@@ -48,7 +48,7 @@ class Vector:
 
         return( sumVector )
 
-    def __add__(self, other):
+    def __sub__(self, other):
         """Overloading the '-' operator so that we can subtract vectors. We can only subtract two vectors of same
         length. We will add a row vector to a column vector (and output a row vector)."""
 
@@ -62,11 +62,11 @@ class Vector:
 
         return( diffVector )
 
-    def __mult__(self, other ):
+    def __mul__(self, other ):
         """Overloading the '*' operator so we can multiply two vectors together piecewise. If other is a scalar, 
           we will scale self by it."""
 
-        productVector = Vector(0, len(self) ) #create the sum vector
+        productVector = Vector(0, len(self) ) #create the product vector
 
         try: #attempt to test other's length
             other_length = len(other) #if other has no len() method, it is a scalar and we will attempt to scale by it
@@ -88,7 +88,7 @@ class Vector:
     def __radd__( self, other ): #the reflection of __add__(). (other+self rather than self+other)
         return( Vector.add(other, self ) ) #we call add as a function rather than a method and switch the inputs
 
-    def __rmult__( self, other ):
+    def __rmul__( self, other ):
         return( Vector.mult(other, self ) )
 
     def __rsub__( self, other ):
